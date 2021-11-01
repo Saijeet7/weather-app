@@ -1,6 +1,44 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import "./style.css";
+
+
 const Temp = () => {
+
+    const [searchValue, setSearchValue] = useState("kathmandu");
+    const [tempInfo, setTemInfo] = useState({});
+
+    const getWeatherInfo = async() => {
+        try{
+            let url=`https://api.openweathermap.org/data/2.5/weather?q=${searchValue}&units=metric&appid=ece0b97615837f65de88726c8590b805`;
+            let res= await fetch(url);
+            let data = await res.json();
+
+            const {temp, humidity, pressure} = data.main;
+            const {main: weathermood} = data.weather[0];
+            const {name}=data;
+            const {speed} = data.wind;
+            const {country, sunset} = data.sys;
+            
+            const myNewWeatherInfo = {
+                temp,
+                humidity,
+                pressure,
+                weathermood,
+                name,
+                speed,
+                country,
+                sunset
+            };
+
+         setTemInfo(myNewWeatherInfo);
+        } catch (error){
+            console.log(error);
+        }
+    };
+
+    useEffect(() =>{
+        getWeatherInfo();
+    },[]);
     return(
         <>
             <div className="wrap">
@@ -10,8 +48,13 @@ const Temp = () => {
                         autoFocus
                         id="search"
                         className="searchTerm"
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
                     />
-                    <button className="searchButton" type="button">
+                    <button
+                    className="searchButton"
+                    type="button"
+                    onClick={getWeatherInfo}>
                         Search
                     </button>
                 </div>
@@ -32,7 +75,7 @@ const Temp = () => {
                         <div className="place"> Kathmandu, Nepal</div>
                     </div>
                 </div>
-                <div className="date">{new Date().toLocaleString()}</div>
+                <div className="date"> {new Date().toLocaleString()} </div>
                 {/* our 4 Column section */}
                 <div className="extra-temp">
                     <div className="temp-info-minmax">
