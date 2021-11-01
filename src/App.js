@@ -1,10 +1,11 @@
-
+import React from 'react';
+import Temp from './components/weather/temp';
 
 function App() {
   return (
-    <div>
-      <h1>Hello World</h1>
-    </div>
+    <>
+      <Temp/>
+    </>
   );
 }
 
